@@ -43,7 +43,7 @@ export default function UserMenu({ lang }: { lang: Lang }) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-sm shadow-md border border-gray-200 hover:bg-gray-50 transition-colors"
+        className="flex items-center gap-1.5 sm:gap-2 rounded-lg bg-white px-2 sm:px-3 py-1.5 text-sm shadow-md border border-gray-200 hover:bg-gray-50 transition-colors"
       >
         {avatar ? (
           <img src={avatar} alt="" className="h-6 w-6 rounded-full" />
@@ -52,11 +52,11 @@ export default function UserMenu({ lang }: { lang: Lang }) {
             {name[0].toUpperCase()}
           </div>
         )}
-        <span className="text-gray-700 max-w-[100px] truncate">{name}</span>
+        <span className="text-gray-700 max-w-[60px] sm:max-w-[100px] truncate text-xs sm:text-sm">{name}</span>
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-48 rounded-lg bg-white shadow-lg border border-gray-200 py-1 z-[1000]">
+        <div className="fixed right-2 sm:right-3 top-12 sm:top-14 w-48 rounded-lg bg-white shadow-xl border border-gray-200 py-1 z-[9999]">
           {isAdmin && (
             <a
               href="/admin"
