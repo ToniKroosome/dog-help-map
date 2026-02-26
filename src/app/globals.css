@@ -5,22 +5,94 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --background: #111827;
+  --foreground: #f3f4f6;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Dark mode overrides for UI panels */
+.dark .panel-bg {
+  background: rgba(17, 24, 39, 0.95) !important;
+  border-color: #374151 !important;
+  color: #f3f4f6 !important;
+}
+
+.dark .panel-bg input,
+.dark .panel-bg textarea {
+  background: #1f2937 !important;
+  border-color: #374151 !important;
+  color: #f3f4f6 !important;
+}
+
+.dark .panel-bg .text-gray-700 { color: #d1d5db !important; }
+.dark .panel-bg .text-gray-600 { color: #9ca3af !important; }
+.dark .panel-bg .text-gray-500 { color: #9ca3af !important; }
+.dark .panel-bg .text-gray-400 { color: #6b7280 !important; }
+.dark .panel-bg .bg-white { background: #1f2937 !important; }
+.dark .panel-bg .bg-gray-50 { background: #111827 !important; }
+.dark .panel-bg .bg-gray-100 { background: #1f2937 !important; }
+.dark .panel-bg .border-gray-200 { border-color: #374151 !important; }
+.dark .panel-bg .border-gray-100 { border-color: #1f2937 !important; }
+.dark .panel-bg .border-gray-300 { border-color: #4b5563 !important; }
+.dark .panel-bg .hover\:bg-gray-100:hover { background: #374151 !important; }
+.dark .panel-bg .hover\:bg-gray-50:hover { background: #1f2937 !important; }
+
+/* Leaflet overrides */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.dog-marker, .pin-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.leaflet-control-attribution {
+  font-size: 8px !important;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
