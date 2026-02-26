@@ -17,13 +17,13 @@ export default function FilterBar({
 }) {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-[800] pointer-events-none">
-      <div className="px-3 pb-3">
-        <div className="pointer-events-auto panel-bg bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 px-3 py-2.5">
+      <div className="px-2 pb-2 sm:px-3 sm:pb-3">
+        <div className="pointer-events-auto panel-bg bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 px-2 py-2 sm:px-3 sm:py-2.5">
           {/* Heatmap toggle */}
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
             <button
               onClick={onToggleHeatmap}
-              className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all ${
+              className={`flex items-center gap-1 sm:gap-1.5 rounded-full px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium transition-all ${
                 showHeatmap
                   ? 'bg-orange-100 text-orange-600'
                   : 'bg-gray-100 text-gray-500'
@@ -32,19 +32,18 @@ export default function FilterBar({
               <span>{showHeatmap ? '🔥' : '📍'}</span>
               <span>{showHeatmap ? T.heatmap[lang] : T.pins[lang]}</span>
             </button>
-            <span className="text-xs text-gray-400">{T.filter[lang]}:</span>
+            <span className="text-[10px] sm:text-xs text-gray-400">{T.filter[lang]}:</span>
           </div>
 
           {/* Status filters */}
-          <div className="flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-hide">
+          <div className="flex gap-1 sm:gap-1.5 overflow-x-auto pb-0.5 scrollbar-hide">
             <button
               onClick={() => {
-                // Clear all filters = show all
                 ALL_STATUSES.forEach((s) => {
                   if (activeFilters.has(s)) onToggleFilter(s);
                 });
               }}
-              className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium transition-all ${
+              className={`shrink-0 rounded-full px-2 py-0.5 sm:px-2.5 sm:py-1 text-[10px] sm:text-xs font-medium transition-all ${
                 activeFilters.size === 0
                   ? 'bg-gray-800 text-white'
                   : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
@@ -59,7 +58,7 @@ export default function FilterBar({
                 <button
                   key={s}
                   onClick={() => onToggleFilter(s)}
-                  className={`shrink-0 flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-all ${
+                  className={`shrink-0 flex items-center gap-0.5 sm:gap-1 rounded-full px-1.5 py-0.5 sm:px-2.5 sm:py-1 text-[10px] sm:text-xs font-medium transition-all ${
                     active ? 'ring-2 ring-offset-1' : 'opacity-50 hover:opacity-80'
                   }`}
                   style={{
@@ -68,7 +67,7 @@ export default function FilterBar({
                   }}
                 >
                   <span>{cfg.icon}</span>
-                  <span>{cfg.label[lang]}</span>
+                  <span className="hidden sm:inline">{cfg.label[lang]}</span>
                 </button>
               );
             })}

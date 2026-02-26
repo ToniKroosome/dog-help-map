@@ -279,10 +279,10 @@ export default function MapContainer({
       <div ref={containerRef} className="w-full h-full" />
 
       {/* Map style picker */}
-      <div className="absolute bottom-40 right-3 z-[500]">
+      <div className="absolute bottom-[160px] sm:bottom-40 right-2 sm:right-3 z-[500]">
         <button
           onClick={() => setShowStylePicker(!showStylePicker)}
-          className="w-10 h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-lg hover:bg-gray-50 transition-colors"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-base sm:text-lg hover:bg-gray-50 transition-colors"
           title="Map style"
         >
           {MAP_STYLES[styleIndex].icon}
@@ -308,7 +308,7 @@ export default function MapContainer({
       {/* Locate me button */}
       <button
         onClick={locateMe}
-        className="absolute bottom-28 right-3 z-[500] w-10 h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-lg hover:bg-gray-50 transition-colors"
+        className="absolute bottom-[120px] sm:bottom-28 right-2 sm:right-3 z-[500] w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-base sm:text-lg hover:bg-gray-50 transition-colors"
         title="Locate me"
       >
         📍

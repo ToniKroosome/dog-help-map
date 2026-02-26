@@ -36,34 +36,34 @@ export default function ZonePicker({
       {/* Zone button - shows selected zone or "Zones" */}
       <button
         onClick={() => setOpen(!open)}
-        className={`fixed top-14 right-3 z-[800] rounded-xl px-3 py-2 text-sm font-medium shadow-lg border transition-colors ${
+        className={`fixed top-12 right-2 sm:top-14 sm:right-3 z-[900] rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium shadow-lg border transition-colors ${
           selectedZone
             ? 'bg-blue-500 text-white border-blue-400'
             : 'bg-white/95 backdrop-blur-sm border-gray-200 text-gray-700 hover:bg-white'
         }`}
       >
         {selectedZone ? (
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1">
             <span>{selectedZone.icon}</span>
-            <span>{selectedZone.name[lang]}</span>
+            <span className="hidden sm:inline">{selectedZone.name[lang]}</span>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 onSelect(null);
               }}
-              className="ml-1 bg-white/20 rounded-full w-5 h-5 flex items-center justify-center text-xs"
+              className="ml-0.5 bg-white/20 rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-[10px] sm:text-xs"
             >
               ✕
             </button>
           </span>
         ) : (
-          <span>{lang === 'th' ? '📍 โซน' : '📍 Zones'}</span>
+          <span>{lang === 'th' ? '📍 โซน' : '📍 Zone'}</span>
         )}
       </button>
 
       {/* Zone picker dropdown */}
       {open && (
-        <div className="fixed top-24 right-3 z-[900] w-72 max-h-[60vh] bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden animate-slide-up panel-bg">
+        <div className="fixed top-22 right-2 sm:top-24 sm:right-3 z-[900] w-64 sm:w-72 max-h-[55vh] sm:max-h-[60vh] bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden animate-slide-up panel-bg">
           {/* Search */}
           <div className="p-2 border-b border-gray-100">
             <input

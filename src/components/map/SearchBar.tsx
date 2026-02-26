@@ -60,7 +60,7 @@ export default function SearchBar({
   };
 
   return (
-    <div ref={ref} className="fixed top-14 left-3 right-16 z-[900] pointer-events-auto max-w-md">
+    <div ref={ref} className="fixed top-12 left-2 right-20 sm:right-24 z-[900] pointer-events-auto max-w-md sm:top-14 sm:left-3">
       <div className="relative">
         <input
           type="text"

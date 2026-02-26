@@ -169,21 +169,21 @@ export default function Home() {
       {!reportMode && !showReportForm && !selectedReport && (
         <button
           onClick={handleStartReport}
-          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[800] flex items-center gap-2 rounded-full bg-blue-500 px-5 py-3 text-white font-semibold shadow-xl hover:bg-blue-600 transition-all active:scale-95"
+          className="fixed bottom-[72px] sm:bottom-24 left-1/2 -translate-x-1/2 z-[800] flex items-center gap-1.5 sm:gap-2 rounded-full bg-blue-500 px-4 py-2.5 sm:px-5 sm:py-3 text-white font-semibold shadow-xl hover:bg-blue-600 transition-all active:scale-95 text-sm sm:text-base"
         >
-          <span className="text-lg">🐕</span>
+          <span className="text-base sm:text-lg">🐕</span>
           <span>{T.reportDog[lang]}</span>
         </button>
       )}
 
       {/* Report mode banner */}
       {reportMode && !showReportForm && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[900] bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg text-sm font-medium flex items-center gap-2 animate-slide-up">
+        <div className="fixed top-[52px] sm:top-16 left-1/2 -translate-x-1/2 z-[950] bg-blue-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-lg text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2 animate-slide-up max-w-[90vw]">
           <span>📍</span>
           <span>{T.tapToPlace[lang]}</span>
           <button
             onClick={handleCancelReport}
-            className="ml-2 bg-white/20 rounded-full px-2 py-0.5 text-xs hover:bg-white/30"
+            className="ml-1 sm:ml-2 bg-white/20 rounded-full px-2 py-0.5 text-xs hover:bg-white/30"
           >
             {T.cancel[lang]}
           </button>
@@ -215,12 +215,12 @@ export default function Home() {
 
       {/* Moving pin banner */}
       {movingReportId && (
-        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-[900] bg-orange-500 text-white px-4 py-2 rounded-full shadow-lg text-sm font-medium flex items-center gap-2 animate-slide-up">
+        <div className="fixed top-[52px] sm:top-16 left-1/2 -translate-x-1/2 z-[950] bg-orange-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-lg text-xs sm:text-sm font-medium flex items-center gap-1.5 sm:gap-2 animate-slide-up max-w-[90vw]">
           <span>📌</span>
           <span>{lang === 'th' ? 'ลากหมุดไปตำแหน่งใหม่' : 'Drag pin to new position'}</span>
           <button
             onClick={() => setMovingReportId(null)}
-            className="ml-2 bg-white/20 rounded-full px-2 py-0.5 text-xs hover:bg-white/30"
+            className="ml-1 sm:ml-2 bg-white/20 rounded-full px-2 py-0.5 text-xs hover:bg-white/30"
           >
             {T.cancel[lang]}
           </button>

@@ -49,7 +49,7 @@ export default function ReportList({
       {/* Toggle button */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-28 left-3 z-[800] w-10 h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-lg hover:bg-gray-50 transition-colors"
+        className="fixed bottom-[120px] sm:bottom-28 left-2 sm:left-3 z-[800] w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-base sm:text-lg hover:bg-gray-50 transition-colors"
         title="Report list"
       >
         {open ? '✕' : '📋'}
@@ -57,7 +57,7 @@ export default function ReportList({
 
       {/* List panel */}
       {open && (
-        <div className="fixed bottom-40 left-3 z-[800] w-72 max-h-[50vh] bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-slide-up panel-bg">
+        <div className="fixed bottom-[160px] sm:bottom-40 left-2 sm:left-3 z-[800] w-[calc(100vw-60px)] sm:w-72 max-h-[45vh] sm:max-h-[50vh] bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-slide-up panel-bg">
           {/* Header */}
           <div className="px-3 py-2 border-b border-gray-100">
             <div className="flex items-center justify-between mb-1">
