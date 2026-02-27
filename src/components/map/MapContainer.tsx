@@ -71,6 +71,27 @@ export default function MapContainer({
   const containerRef = useRef<HTMLDivElement>(null);
   const [styleIndex, setStyleIndex] = useState(0);
   const [showStylePicker, setShowStylePicker] = useState(false);
+  const tileErrorCountRef = useRef(0);
+  const FALLBACK_INDEX = MAP_STYLES.findIndex((s) => s.name === 'Detailed');
+
+  const applyTileLayer = useCallback((map: L.Map, index: number) => {
+    if (tileLayerRef.current) map.removeLayer(tileLayerRef.current);
+    tileErrorCountRef.current = 0;
+    const style = MAP_STYLES[index];
+    const layer = L.tileLayer(style.url, {
+      attribution: style.attr,
+      maxZoom: 20,
+      subdomains: style.subdomains || undefined,
+    });
+    layer.on('tileerror', () => {
+      tileErrorCountRef.current++;
+      if (tileErrorCountRef.current >= 5 && index !== FALLBACK_INDEX) {
+        setStyleIndex(FALLBACK_INDEX);
+      }
+    });
+    layer.addTo(map);
+    tileLayerRef.current = layer;
+  }, [FALLBACK_INDEX]);
 
   // Initialize map
   useEffect(() => {
@@ -82,12 +103,7 @@ export default function MapContainer({
       zoomControl: false,
     });
 
-    const style = MAP_STYLES[0];
-    tileLayerRef.current = L.tileLayer(style.url, {
-      attribution: style.attr,
-      maxZoom: 20,
-      subdomains: style.subdomains || undefined,
-    }).addTo(map);
+    applyTileLayer(map, 0);
 
     L.control.zoom({ position: 'topright' }).addTo(map);
 
@@ -98,20 +114,14 @@ export default function MapContainer({
       map.remove();
       mapRef.current = null;
     };
-  }, []);
+  }, [applyTileLayer]);
 
   // Switch map style
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !tileLayerRef.current) return;
-    const style = MAP_STYLES[styleIndex];
-    map.removeLayer(tileLayerRef.current);
-    tileLayerRef.current = L.tileLayer(style.url, {
-      attribution: style.attr,
-      maxZoom: 20,
-      subdomains: style.subdomains || undefined,
-    }).addTo(map);
-  }, [styleIndex]);
+    if (!map) return;
+    applyTileLayer(map, styleIndex);
+  }, [styleIndex, applyTileLayer]);
 
   // Fly to location
   useEffect(() => {
