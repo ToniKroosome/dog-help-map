@@ -68,13 +68,18 @@ export default function DogDetailPanel({
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[1000] max-h-[70vh] overflow-y-auto rounded-t-2xl panel-bg bg-white shadow-2xl border-t border-gray-200 animate-slide-up">
+    <div
+      className="fixed inset-x-0 bottom-0 z-[1000] max-h-[70vh] overflow-y-auto rounded-t-2xl panel-bg bg-white shadow-2xl border-t border-gray-200 animate-slide-up"
+      style={{ overscrollBehavior: 'contain', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      onTouchStart={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
+    >
       {/* Handle */}
-      <div className="sticky top-0 bg-white pt-3 pb-2 px-4 flex justify-center rounded-t-2xl">
+      <div className="sticky top-0 bg-white pt-3 pb-2 px-4 flex justify-center rounded-t-2xl z-10">
         <div className="h-1 w-10 rounded-full bg-gray-300" />
       </div>
 
-      <div className="px-4 pb-6">
+      <div className="px-4 pb-8">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2">

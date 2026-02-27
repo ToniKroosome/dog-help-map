@@ -16,7 +16,7 @@ export default function FilterBar({
   onToggleHeatmap: () => void;
 }) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[800] pointer-events-none">
+    <div className="fixed bottom-0 left-0 right-0 z-[800] pointer-events-none" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
       <div className="px-2 pb-2 sm:px-3 sm:pb-3">
         <div className="pointer-events-auto panel-bg bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-100 px-2 py-2 sm:px-3 sm:py-2.5">
           {/* Heatmap toggle */}
