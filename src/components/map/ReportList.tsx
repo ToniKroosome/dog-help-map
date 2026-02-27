@@ -58,7 +58,7 @@ export default function ReportList({
       {/* List panel */}
       {open && (
         <div
-          className="fixed bottom-[160px] sm:bottom-40 left-2 sm:left-3 z-[800] w-[calc(100vw-60px)] sm:w-72 max-h-[calc(100vh-200px)] sm:max-h-[50vh] bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-slide-up panel-bg flex flex-col"
+          className="fixed bottom-[160px] sm:bottom-40 left-2 sm:left-3 z-[800] w-[calc(100vw-60px)] sm:w-72 max-h-[40vh] sm:max-h-[50vh] bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-slide-up panel-bg flex flex-col"
           onTouchStart={(e) => e.stopPropagation()}
           onTouchMove={(e) => e.stopPropagation()}
         >
