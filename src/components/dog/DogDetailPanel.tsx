@@ -5,7 +5,7 @@ import type { DogReport } from '@/lib/types';
 import { DOG_STATUSES, T, type Lang } from '@/lib/constants';
 import StatusBadge from './StatusBadge';
 import StatusUpdateForm from './StatusUpdateForm';
-import { useStatusUpdates } from '@/hooks/useReports';
+import { useStatusUpdates, useReports } from '@/hooks/useReports';
 import { useAuth } from '@/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';
 
@@ -37,6 +37,7 @@ export default function DogDetailPanel({
 }) {
   const { user } = useAuth();
   const { updates, addUpdate } = useStatusUpdates(report.id);
+  const { uploadPhoto } = useReports();
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -157,8 +158,16 @@ export default function DogDetailPanel({
         {showUpdateForm && (
           <StatusUpdateForm
             lang={lang}
-            onSubmit={async (status, note) => {
+            onSubmit={async (status, note, photo) => {
               await addUpdate(status, note);
+              if (photo) {
+                const photoUrl = await uploadPhoto(photo);
+                const supabase = createClient();
+                await supabase
+                  .from('dog_reports')
+                  .update({ photo_url: photoUrl })
+                  .eq('id', report.id);
+              }
               setShowUpdateForm(false);
               onStatusUpdated();
             }}

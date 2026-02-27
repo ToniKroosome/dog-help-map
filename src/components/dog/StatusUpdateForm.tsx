@@ -9,17 +9,27 @@ export default function StatusUpdateForm({
   onCancel,
 }: {
   lang: Lang;
-  onSubmit: (status: DogStatus, note?: string) => Promise<void>;
+  onSubmit: (status: DogStatus, note?: string, photo?: File) => Promise<void>;
   onCancel: () => void;
 }) {
   const [status, setStatus] = useState<DogStatus>('fed');
   const [note, setNote] = useState('');
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setPhoto(file);
+      setPhotoPreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      await onSubmit(status, note || undefined);
+      await onSubmit(status, note || undefined, photo || undefined);
     } finally {
       setSubmitting(false);
     }
@@ -58,6 +68,26 @@ export default function StatusUpdateForm({
         placeholder={`${T.note[lang]} (${T.optional[lang]})`}
         className="w-full rounded-lg border border-gray-200 p-2 text-sm resize-none h-16 focus:outline-none focus:ring-2 focus:ring-blue-300"
       />
+
+      {/* Photo upload */}
+      <div className="mt-2">
+        {photoPreview ? (
+          <div className="relative">
+            <img src={photoPreview} alt="Preview" className="w-full h-24 object-cover rounded-lg" />
+            <button
+              onClick={() => { setPhoto(null); setPhotoPreview(null); }}
+              className="absolute top-1 right-1 bg-black/50 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]"
+            >
+              ✕
+            </button>
+          </div>
+        ) : (
+          <label className="flex items-center justify-center w-full h-12 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition-colors">
+            <span className="text-xs text-gray-400">{lang === 'th' ? '📷 เพิ่มรูปภาพ' : '📷 Add photo'}</span>
+            <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+          </label>
+        )}
+      </div>
 
       <div className="flex gap-2 mt-2">
         <button
