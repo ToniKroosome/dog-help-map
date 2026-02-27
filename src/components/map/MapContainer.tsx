@@ -9,8 +9,8 @@ import { DOG_STATUSES, BANGKOK_CENTER, DEFAULT_ZOOM, type DogStatus } from '@/li
 import type { DogReport } from '@/lib/types';
 
 const MAP_STYLES = [
-  { name: 'Voyager', icon: '🗺️', url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attr: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd' },
   { name: 'Detailed', icon: '🏢', url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attr: '&copy; OpenStreetMap', subdomains: 'abc' },
+  { name: 'Voyager', icon: '🗺️', url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attr: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd' },
   { name: 'Satellite', icon: '🛰️', url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attr: '&copy; Esri', subdomains: '' },
   { name: 'Dark', icon: '🌙', url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', attr: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd' },
 ];
