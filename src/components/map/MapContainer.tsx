@@ -270,19 +270,45 @@ export default function MapContainer({
   }, [showHeatmap, filteredReports]);
 
   // Locate me
-  const locateMe = useCallback(() => {
+  const locateMe = useCallback(async () => {
     const map = mapRef.current;
     if (!map) return;
     if (!navigator.geolocation) {
       alert('Geolocation is not supported by your browser');
       return;
     }
+
+    // Check permission state first (if supported)
+    if (navigator.permissions) {
+      try {
+        const perm = await navigator.permissions.query({ name: 'geolocation' });
+        if (perm.state === 'denied') {
+          alert(
+            'ตำแหน่งถูกปิดกั้น กรุณาเปิดสิทธิ์ตำแหน่งในการตั้งค่าเบราว์เซอร์\n\n' +
+            'Location blocked. Please enable location permission in your browser settings:\n' +
+            'Safari: Settings > Safari > Location\n' +
+            'Chrome: Tap 🔒 icon in address bar > Location'
+          );
+          return;
+        }
+      } catch {
+        // permissions API not supported, continue with normal flow
+      }
+    }
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         map.flyTo([pos.coords.latitude, pos.coords.longitude], 16, { duration: 1.5 });
       },
       (err) => {
-        alert(err.code === 1 ? 'Location permission denied' : 'Could not get your location');
+        if (err.code === 1) {
+          alert(
+            'ตำแหน่งถูกปิดกั้น กรุณาเปิดสิทธิ์ตำแหน่งในการตั้งค่าเบราว์เซอร์\n\n' +
+            'Location blocked. Please enable location permission in your browser settings.'
+          );
+        } else {
+          alert('ไม่สามารถหาตำแหน่งได้ / Could not get your location');
+        }
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
