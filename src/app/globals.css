@@ -18,8 +18,10 @@ body {
   padding: 0;
 }
 
-html {
+html, body {
+  height: auto !important;
   min-height: 100%;
+  overflow-x: hidden;
 }
 
 /* Dark mode overrides for UI panels */
