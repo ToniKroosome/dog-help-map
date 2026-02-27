@@ -273,7 +273,19 @@ export default function MapContainer({
   const locateMe = useCallback(() => {
     const map = mapRef.current;
     if (!map) return;
-    map.locate({ setView: true, maxZoom: 16 });
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser');
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        map.flyTo([pos.coords.latitude, pos.coords.longitude], 16, { duration: 1.5 });
+      },
+      (err) => {
+        alert(err.code === 1 ? 'Location permission denied' : 'Could not get your location');
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   }, []);
 
   return (
