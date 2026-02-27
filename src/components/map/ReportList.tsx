@@ -57,7 +57,7 @@ export default function ReportList({
 
       {/* List panel */}
       {open && (
-        <div className="fixed bottom-[160px] sm:bottom-40 left-2 sm:left-3 z-[800] w-[calc(100vw-60px)] sm:w-72 max-h-[45vh] sm:max-h-[50vh] bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-slide-up panel-bg">
+        <div className="fixed bottom-[160px] sm:bottom-40 left-2 sm:left-3 z-[800] w-[calc(100vw-60px)] sm:w-72 max-h-[calc(100vh-200px)] sm:max-h-[50vh] bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden animate-slide-up panel-bg flex flex-col">
           {/* Header */}
           <div className="px-3 py-2 border-b border-gray-100">
             <div className="flex items-center justify-between mb-1">
@@ -90,7 +90,7 @@ export default function ReportList({
           </div>
 
           {/* List */}
-          <div className="overflow-y-auto max-h-[calc(50vh-56px)] scrollbar-hide">
+          <div className="overflow-y-auto flex-1 min-h-0 scrollbar-hide">
             {sorted.length === 0 ? (
               <div className="px-3 py-8 text-center text-gray-400 text-sm">
                 {T.noReports[lang]}
