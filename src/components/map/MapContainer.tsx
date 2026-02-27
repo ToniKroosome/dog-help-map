@@ -47,6 +47,7 @@ interface MapContainerProps {
   onMarkerClick: (report: DogReport) => void;
   movingReportId: string | null;
   onMoveComplete: (reportId: string, lat: number, lng: number) => void;
+  hideControls?: boolean;
 }
 
 export default function MapContainer({
@@ -60,6 +61,7 @@ export default function MapContainer({
   onMarkerClick,
   movingReportId,
   onMoveComplete,
+  hideControls,
 }: MapContainerProps) {
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<L.LayerGroup | null>(null);
@@ -279,40 +281,44 @@ export default function MapContainer({
       <div ref={containerRef} className="w-full h-full" />
 
       {/* Map style picker */}
-      <div className="absolute bottom-[160px] sm:bottom-40 right-2 sm:right-3 z-[500]">
-        <button
-          onClick={() => setShowStylePicker(!showStylePicker)}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-base sm:text-lg hover:bg-gray-50 transition-colors"
-          title="Map style"
-        >
-          {MAP_STYLES[styleIndex].icon}
-        </button>
-        {showStylePicker && (
-          <div className="absolute bottom-12 right-0 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden mb-1">
-            {MAP_STYLES.map((s, i) => (
-              <button
-                key={s.name}
-                onClick={() => { setStyleIndex(i); setShowStylePicker(false); }}
-                className={`flex items-center gap-2 px-3 py-2 text-sm w-full hover:bg-gray-50 transition-colors ${
-                  i === styleIndex ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700'
-                }`}
-              >
-                <span>{s.icon}</span>
-                <span>{s.name}</span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+      {!hideControls && (
+        <div className="absolute bottom-[160px] sm:bottom-40 right-2 sm:right-3 z-[500]">
+          <button
+            onClick={() => setShowStylePicker(!showStylePicker)}
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-base sm:text-lg hover:bg-gray-50 transition-colors"
+            title="Map style"
+          >
+            {MAP_STYLES[styleIndex].icon}
+          </button>
+          {showStylePicker && (
+            <div className="absolute bottom-12 right-0 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden mb-1">
+              {MAP_STYLES.map((s, i) => (
+                <button
+                  key={s.name}
+                  onClick={() => { setStyleIndex(i); setShowStylePicker(false); }}
+                  className={`flex items-center gap-2 px-3 py-2 text-sm w-full hover:bg-gray-50 transition-colors ${
+                    i === styleIndex ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700'
+                  }`}
+                >
+                  <span>{s.icon}</span>
+                  <span>{s.name}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Locate me button */}
-      <button
-        onClick={locateMe}
-        className="absolute bottom-[120px] sm:bottom-28 right-2 sm:right-3 z-[500] w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-base sm:text-lg hover:bg-gray-50 transition-colors"
-        title="Locate me"
-      >
-        📍
-      </button>
+      {!hideControls && (
+        <button
+          onClick={locateMe}
+          className="absolute bottom-[120px] sm:bottom-28 right-2 sm:right-3 z-[500] w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center text-base sm:text-lg hover:bg-gray-50 transition-colors"
+          title="Locate me"
+        >
+          📍
+        </button>
+      )}
     </div>
   );
 }

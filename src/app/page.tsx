@@ -144,15 +144,17 @@ export default function Home() {
         reportCounts={zoneReportCounts}
       />
 
-      <ReportList
-        lang={lang}
-        reports={zoneFilteredReports}
-        selectedZone={selectedZone}
-        onSelect={(report) => {
-          setFlyTo({ lat: report.latitude, lng: report.longitude });
-          setSelectedReport(report);
-        }}
-      />
+      {!selectedReport && !showReportForm && (
+        <ReportList
+          lang={lang}
+          reports={zoneFilteredReports}
+          selectedZone={selectedZone}
+          onSelect={(report) => {
+            setFlyTo({ lat: report.latitude, lng: report.longitude });
+            setSelectedReport(report);
+          }}
+        />
+      )}
 
       <MapContainer
         reports={zoneFilteredReports}
@@ -165,6 +167,7 @@ export default function Home() {
         onMarkerClick={handleMarkerClick}
         movingReportId={movingReportId}
         onMoveComplete={handleMoveComplete}
+        hideControls={!!selectedReport || showReportForm}
       />
 
       {/* Report FAB button */}
