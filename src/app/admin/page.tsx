@@ -39,8 +39,8 @@ export default async function AdminPage() {
     supabase.from('page_views').select('id', { count: 'exact', head: true }),
     // Unique visitors (distinct visitor_ids)
     supabase.rpc('count_unique_visitors'),
-    // Views last 7 days (with visitor_id for unique counting)
-    supabase.from('page_views').select('created_at, visitor_id').gte('created_at', sevenDaysAgo),
+    // Views last 7 days (with fingerprint for unique counting)
+    supabase.from('page_views').select('created_at, fingerprint').gte('created_at', sevenDaysAgo),
     // Views today
     supabase.from('page_views').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
     // Unique visitors today
@@ -84,11 +84,11 @@ export default async function AdminPage() {
     dailySignups.push({ date: dayLabel, count: uCount });
 
     const dayViews = (views7dRes.data || []).filter(
-      (v: { created_at: string; visitor_id: string }) => v.created_at?.slice(0, 10) === dateStr
+      (v: { created_at: string; fingerprint: string }) => v.created_at?.slice(0, 10) === dateStr
     );
     dailyViews.push({ date: dayLabel, count: dayViews.length });
 
-    const uniqueSet = new Set(dayViews.map((v: { visitor_id: string }) => v.visitor_id));
+    const uniqueSet = new Set(dayViews.map((v: { fingerprint: string }) => v.fingerprint).filter(Boolean));
     dailyUniqueVisitors.push({ date: dayLabel, count: uniqueSet.size });
   }
 
