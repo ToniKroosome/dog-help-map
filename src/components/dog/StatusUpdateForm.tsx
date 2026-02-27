@@ -73,7 +73,7 @@ export default function StatusUpdateForm({
       <div className="mt-2">
         {photoPreview ? (
           <div className="relative">
-            <img src={photoPreview} alt="Preview" className="w-full h-24 object-cover rounded-lg" />
+            <img src={photoPreview} alt="Preview" className="w-full max-h-32 object-contain rounded-lg bg-gray-100" />
             <button
               onClick={() => { setPhoto(null); setPhotoPreview(null); }}
               className="absolute top-1 right-1 bg-black/50 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]"

@@ -105,7 +105,7 @@ export default function DogDetailPanel({
           <img
             src={report.photo_url}
             alt="Dog"
-            className="w-full h-48 object-cover rounded-xl mb-3"
+            className="w-full max-h-64 object-contain rounded-xl mb-3 bg-gray-100"
           />
         )}
 

@@ -179,7 +179,7 @@ export default function ReportForm({
             </label>
             {photoPreview ? (
               <div className="relative">
-                <img src={photoPreview} alt="Preview" className="w-full h-32 object-cover rounded-xl" />
+                <img src={photoPreview} alt="Preview" className="w-full max-h-40 object-contain rounded-xl bg-gray-100" />
                 <button
                   onClick={() => { setPhoto(null); setPhotoPreview(null); }}
                   className="absolute top-2 right-2 bg-black/50 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
