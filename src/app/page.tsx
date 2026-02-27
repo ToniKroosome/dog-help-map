@@ -15,6 +15,7 @@ import ZonePicker from '@/components/map/ZonePicker';
 import { T, type Lang, type DogStatus } from '@/lib/constants';
 import type { DogReport } from '@/lib/types';
 import { BANGKOK_ZONES, distanceMeters, type Zone } from '@/lib/zones';
+import { usePageView } from '@/hooks/usePageView';
 
 const MapContainer = dynamic(() => import('@/components/map/MapContainer'), {
   ssr: false,
@@ -29,6 +30,7 @@ const MapContainer = dynamic(() => import('@/components/map/MapContainer'), {
 });
 
 export default function Home() {
+  usePageView();
   const { reports, fetchReports } = useReports();
   const { user } = useAuth();
 

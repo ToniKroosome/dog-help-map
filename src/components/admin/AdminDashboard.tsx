@@ -13,6 +13,9 @@ interface Props {
   statusCounts: Record<string, number>;
   dailyReports: { date: string; count: number }[];
   dailySignups: { date: string; count: number }[];
+  totalViews: number;
+  uniqueVisitors: number;
+  dailyViews: { date: string; count: number }[];
 }
 
 function MiniBarChart({ data, color }: { data: { date: string; count: number }[]; color: string }) {
@@ -78,6 +81,9 @@ export default function AdminDashboard({
   statusCounts,
   dailyReports,
   dailySignups,
+  totalViews,
+  uniqueVisitors,
+  dailyViews,
 }: Props) {
   const [lang, setLang] = useState<Lang>('th');
   const [reports, setReports] = useState(initialReports);
@@ -127,7 +133,7 @@ export default function AdminDashboard({
 
       <main className="max-w-6xl mx-auto px-4 py-6 space-y-6">
         {/* Stat Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           <StatCard
             icon="📊"
             label={T.totalReports[lang]}
@@ -137,12 +143,14 @@ export default function AdminDashboard({
             ).filter(Boolean).join(' ')}
           />
           <StatCard icon="👥" label={T.totalUsers[lang]} value={totalUsers} />
-          <StatCard icon="🔄" label={T.statusUpdates[lang]} value={totalUpdates} />
           <StatCard icon="📌" label={T.reportsToday[lang]} value={reportsToday} />
+          <StatCard icon="👁️" label={T.totalViews[lang]} value={totalViews} />
+          <StatCard icon="🧑‍🤝‍🧑" label={T.uniqueVisitors[lang]} value={uniqueVisitors} />
+          <StatCard icon="🔄" label={T.statusUpdates[lang]} value={totalUpdates} />
         </div>
 
         {/* Mini Charts */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
             <h3 className="text-xs font-medium text-gray-500 mb-3">{T.reportsLast7Days[lang]}</h3>
             <MiniBarChart data={dailyReports} color="#3b82f6" />
@@ -150,6 +158,10 @@ export default function AdminDashboard({
           <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
             <h3 className="text-xs font-medium text-gray-500 mb-3">{T.signupsLast7Days[lang]}</h3>
             <MiniBarChart data={dailySignups} color="#22c55e" />
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+            <h3 className="text-xs font-medium text-gray-500 mb-3">{T.viewsLast7Days[lang]}</h3>
+            <MiniBarChart data={dailyViews} color="#a855f7" />
           </div>
         </div>
 

@@ -17,6 +17,9 @@ export default async function AdminPage() {
     todayRes,
     reports7dRes,
     users7dRes,
+    totalViewsRes,
+    uniqueVisitorsRes,
+    views7dRes,
   ] = await Promise.all([
     // All reports
     supabase.from('dog_reports').select('*').order('created_at', { ascending: false }),
@@ -30,12 +33,20 @@ export default async function AdminPage() {
     supabase.from('dog_reports').select('created_at').gte('created_at', sevenDaysAgo),
     // User signups last 7 days
     supabase.from('profiles').select('created_at').gte('created_at', sevenDaysAgo),
+    // Total page views
+    supabase.from('page_views').select('id', { count: 'exact', head: true }),
+    // Unique visitors (distinct visitor_ids)
+    supabase.rpc('count_unique_visitors'),
+    // Views last 7 days
+    supabase.from('page_views').select('created_at').gte('created_at', sevenDaysAgo),
   ]);
 
   const reports = reportsRes.data || [];
   const totalUsers = usersRes.count || 0;
   const totalUpdates = updatesRes.count || 0;
   const reportsToday = todayRes.count || 0;
+  const totalViews = totalViewsRes.count || 0;
+  const uniqueVisitors = (uniqueVisitorsRes.data as number) || 0;
 
   // Count reports by status
   const statusCounts: Record<string, number> = {};
@@ -46,6 +57,7 @@ export default async function AdminPage() {
   // Build daily counts for last 7 days
   const dailyReports: { date: string; count: number }[] = [];
   const dailySignups: { date: string; count: number }[] = [];
+  const dailyViews: { date: string; count: number }[] = [];
 
   for (let i = 6; i >= 0; i--) {
     const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
@@ -61,6 +73,11 @@ export default async function AdminPage() {
       (u) => u.created_at?.slice(0, 10) === dateStr
     ).length;
     dailySignups.push({ date: dayLabel, count: uCount });
+
+    const vCount = (views7dRes.data || []).filter(
+      (v) => v.created_at?.slice(0, 10) === dateStr
+    ).length;
+    dailyViews.push({ date: dayLabel, count: vCount });
   }
 
   return (
@@ -72,6 +89,9 @@ export default async function AdminPage() {
       statusCounts={statusCounts}
       dailyReports={dailyReports}
       dailySignups={dailySignups}
+      totalViews={totalViews}
+      uniqueVisitors={uniqueVisitors}
+      dailyViews={dailyViews}
     />
   );
 }
