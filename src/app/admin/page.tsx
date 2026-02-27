@@ -22,6 +22,7 @@ export default async function AdminPage() {
     views7dRes,
     viewsTodayRes,
     visitorsTodayRes,
+    referrersRes,
   ] = await Promise.all([
     // All reports
     supabase.from('dog_reports').select('*').order('created_at', { ascending: false }),
@@ -45,6 +46,8 @@ export default async function AdminPage() {
     supabase.from('page_views').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
     // Unique visitors today
     supabase.rpc('count_unique_visitors_since', { since_date: todayStart }),
+    // Referrers for traffic sources
+    supabase.from('page_views').select('referrer').not('referrer', 'is', null),
   ]);
 
   const reports = reportsRes.data || [];
@@ -92,6 +95,29 @@ export default async function AdminPage() {
     dailyUniqueVisitors.push({ date: dayLabel, count: uniqueSet.size });
   }
 
+  // Build traffic sources
+  const sourceCounts: Record<string, number> = {};
+  (referrersRes.data || []).forEach((row: { referrer: string }) => {
+    if (!row.referrer) return;
+    try {
+      const hostname = new URL(row.referrer).hostname.replace('www.', '').replace('l.', '').replace('lm.', '');
+      const source = hostname.includes('facebook') || hostname.includes('fb.com') ? 'Facebook'
+        : hostname.includes('twitter') || hostname.includes('t.co') || hostname.includes('x.com') ? 'X / Twitter'
+        : hostname.includes('instagram') ? 'Instagram'
+        : hostname.includes('line.me') || hostname.includes('line-apps') ? 'LINE'
+        : hostname.includes('google') ? 'Google'
+        : hostname.includes('tiktok') ? 'TikTok'
+        : hostname;
+      sourceCounts[source] = (sourceCounts[source] || 0) + 1;
+    } catch {
+      sourceCounts[row.referrer] = (sourceCounts[row.referrer] || 0) + 1;
+    }
+  });
+  const trafficSources = Object.entries(sourceCounts)
+    .map(([source, count]) => ({ source, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10);
+
   return (
     <AdminDashboard
       reports={reports}
@@ -107,6 +133,7 @@ export default async function AdminPage() {
       visitorsToday={visitorsToday}
       dailyViews={dailyViews}
       dailyUniqueVisitors={dailyUniqueVisitors}
+      trafficSources={trafficSources}
     />
   );
 }

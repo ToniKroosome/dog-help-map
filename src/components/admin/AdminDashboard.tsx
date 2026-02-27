@@ -19,6 +19,7 @@ interface Props {
   visitorsToday: number;
   dailyViews: { date: string; count: number }[];
   dailyUniqueVisitors: { date: string; count: number }[];
+  trafficSources: { source: string; count: number }[];
 }
 
 /* ─── Mini Bar Chart ─── */
@@ -135,6 +136,7 @@ export default function AdminDashboard({
   visitorsToday,
   dailyViews,
   dailyUniqueVisitors,
+  trafficSources,
 }: Props) {
   const [lang, setLang] = useState<Lang>('th');
   const [reports, setReports] = useState(initialReports);
@@ -274,6 +276,42 @@ export default function AdminDashboard({
             </div>
           </div>
         </section>
+
+        {/* Traffic Sources */}
+        {trafficSources.length > 0 && (
+          <section>
+            <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">
+              {lang === 'th' ? 'แหล่งที่มาของผู้เข้าชม' : 'Traffic Sources'}
+            </h2>
+            <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+              <div className="space-y-3">
+                {trafficSources.map((s, i) => {
+                  const maxCount = trafficSources[0]?.count || 1;
+                  const pct = Math.round((s.count / maxCount) * 100);
+                  return (
+                    <div key={i} className="flex items-center gap-3">
+                      <span className="text-sm font-medium text-gray-700 w-32 truncate shrink-0">
+                        {s.source}
+                      </span>
+                      <div className="flex-1 h-6 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-500"
+                          style={{
+                            width: `${Math.max(pct, 3)}%`,
+                            background: 'linear-gradient(to right, #3b82f6, #60a5fa)',
+                          }}
+                        />
+                      </div>
+                      <span className="text-sm font-semibold text-gray-600 w-12 text-right shrink-0">
+                        {s.count}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Reports Table */}
         <section>

@@ -52,9 +52,10 @@ export function usePageView() {
 
       const visitorId = getVisitorId();
       const fingerprint = await getFingerprint();
+      const referrer = document.referrer || null;
       await supabase
         .from('page_views')
-        .insert({ visitor_id: visitorId, fingerprint, path: window.location.pathname });
+        .insert({ visitor_id: visitorId, fingerprint, path: window.location.pathname, referrer });
     };
 
     track();
