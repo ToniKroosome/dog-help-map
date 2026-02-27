@@ -20,6 +20,8 @@ export default async function AdminPage() {
     totalViewsRes,
     uniqueVisitorsRes,
     views7dRes,
+    viewsTodayRes,
+    visitorsTodayRes,
   ] = await Promise.all([
     // All reports
     supabase.from('dog_reports').select('*').order('created_at', { ascending: false }),
@@ -37,8 +39,12 @@ export default async function AdminPage() {
     supabase.from('page_views').select('id', { count: 'exact', head: true }),
     // Unique visitors (distinct visitor_ids)
     supabase.rpc('count_unique_visitors'),
-    // Views last 7 days
-    supabase.from('page_views').select('created_at').gte('created_at', sevenDaysAgo),
+    // Views last 7 days (with visitor_id for unique counting)
+    supabase.from('page_views').select('created_at, visitor_id').gte('created_at', sevenDaysAgo),
+    // Views today
+    supabase.from('page_views').select('id', { count: 'exact', head: true }).gte('created_at', todayStart),
+    // Unique visitors today
+    supabase.rpc('count_unique_visitors_since', { since_date: todayStart }),
   ]);
 
   const reports = reportsRes.data || [];
@@ -47,6 +53,8 @@ export default async function AdminPage() {
   const reportsToday = todayRes.count || 0;
   const totalViews = totalViewsRes.count || 0;
   const uniqueVisitors = (uniqueVisitorsRes.data as number) || 0;
+  const viewsToday = viewsTodayRes.count || 0;
+  const visitorsToday = (visitorsTodayRes.data as number) || 0;
 
   // Count reports by status
   const statusCounts: Record<string, number> = {};
@@ -58,6 +66,7 @@ export default async function AdminPage() {
   const dailyReports: { date: string; count: number }[] = [];
   const dailySignups: { date: string; count: number }[] = [];
   const dailyViews: { date: string; count: number }[] = [];
+  const dailyUniqueVisitors: { date: string; count: number }[] = [];
 
   for (let i = 6; i >= 0; i--) {
     const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
@@ -74,10 +83,13 @@ export default async function AdminPage() {
     ).length;
     dailySignups.push({ date: dayLabel, count: uCount });
 
-    const vCount = (views7dRes.data || []).filter(
-      (v) => v.created_at?.slice(0, 10) === dateStr
-    ).length;
-    dailyViews.push({ date: dayLabel, count: vCount });
+    const dayViews = (views7dRes.data || []).filter(
+      (v: { created_at: string; visitor_id: string }) => v.created_at?.slice(0, 10) === dateStr
+    );
+    dailyViews.push({ date: dayLabel, count: dayViews.length });
+
+    const uniqueSet = new Set(dayViews.map((v: { visitor_id: string }) => v.visitor_id));
+    dailyUniqueVisitors.push({ date: dayLabel, count: uniqueSet.size });
   }
 
   return (
@@ -91,7 +103,10 @@ export default async function AdminPage() {
       dailySignups={dailySignups}
       totalViews={totalViews}
       uniqueVisitors={uniqueVisitors}
+      viewsToday={viewsToday}
+      visitorsToday={visitorsToday}
       dailyViews={dailyViews}
+      dailyUniqueVisitors={dailyUniqueVisitors}
     />
   );
 }

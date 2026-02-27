@@ -15,7 +15,10 @@ interface Props {
   dailySignups: { date: string; count: number }[];
   totalViews: number;
   uniqueVisitors: number;
+  viewsToday: number;
+  visitorsToday: number;
   dailyViews: { date: string; count: number }[];
+  dailyUniqueVisitors: { date: string; count: number }[];
 }
 
 /* ─── Mini Bar Chart ─── */
@@ -128,7 +131,10 @@ export default function AdminDashboard({
   dailySignups,
   totalViews,
   uniqueVisitors,
+  viewsToday,
+  visitorsToday,
   dailyViews,
+  dailyUniqueVisitors,
 }: Props) {
   const [lang, setLang] = useState<Lang>('th');
   const [reports, setReports] = useState(initialReports);
@@ -198,8 +204,20 @@ export default function AdminDashboard({
             />
             <StatCard icon="👥" label={T.totalUsers[lang]} value={totalUsers} accent="#8b5cf6" />
             <StatCard icon="📌" label={T.reportsToday[lang]} value={reportsToday} accent="#f59e0b" />
-            <StatCard icon="👁️" label={T.totalViews[lang]} value={totalViews} accent="#06b6d4" />
-            <StatCard icon="🧑‍🤝‍🧑" label={T.uniqueVisitors[lang]} value={uniqueVisitors} accent="#10b981" />
+            <StatCard
+              icon="👁️"
+              label={T.totalViews[lang]}
+              value={totalViews}
+              subtitle={`${lang === 'th' ? 'วันนี้' : 'Today'}: ${viewsToday}`}
+              accent="#06b6d4"
+            />
+            <StatCard
+              icon="🧑‍🤝‍🧑"
+              label={T.uniqueVisitors[lang]}
+              value={uniqueVisitors}
+              subtitle={`${lang === 'th' ? 'วันนี้' : 'Today'}: ${visitorsToday}`}
+              accent="#10b981"
+            />
             <StatCard icon="🔄" label={T.statusUpdates[lang]} value={totalUpdates} accent="#ec4899" />
           </div>
         </section>
@@ -209,7 +227,7 @@ export default function AdminDashboard({
           <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">
             {lang === 'th' ? 'แนวโน้ม 7 วัน' : '7-Day Trends'}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
                 {T.reportsLast7Days[lang]}
@@ -241,6 +259,17 @@ export default function AdminDashboard({
                 color="#a855f7"
                 gradientFrom="#a855f7"
                 gradientTo="#c084fc"
+              />
+            </div>
+            <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+                {lang === 'th' ? 'ผู้เข้าชม (7 วันล่าสุด)' : 'Unique Visitors (Last 7 Days)'}
+              </h3>
+              <MiniBarChart
+                data={dailyUniqueVisitors}
+                color="#10b981"
+                gradientFrom="#10b981"
+                gradientTo="#34d399"
               />
             </div>
           </div>
