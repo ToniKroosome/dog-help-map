@@ -34,17 +34,10 @@ export function usePageView() {
         if (profile?.is_admin) return;
       }
 
-      // Deduplicate: only count once per visitor per day
       const visitorId = getVisitorId();
-      const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-      const dedupKey = `dog_map_pv_${today}`;
-      if (localStorage.getItem(dedupKey) === 'true') return;
-
       await supabase
         .from('page_views')
         .insert({ visitor_id: visitorId, path: window.location.pathname });
-
-      localStorage.setItem(dedupKey, 'true');
     };
 
     track();
