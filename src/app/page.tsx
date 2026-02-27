@@ -129,7 +129,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className={`h-screen w-screen relative ${darkMode ? 'dark' : ''}`}>
+    <div className={`h-screen w-screen relative overflow-hidden ${darkMode ? 'dark' : ''}`}>
       <Header lang={lang} onToggleLang={handleToggleLang} darkMode={darkMode} onToggleDark={() => setDarkMode(!darkMode)} />
 
       <SearchBar

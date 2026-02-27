@@ -16,7 +16,7 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
       </head>
-      <body className="h-screen w-screen overflow-hidden">
+      <body>
         {children}
       </body>
     </html>
