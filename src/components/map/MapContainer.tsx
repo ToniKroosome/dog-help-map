@@ -11,7 +11,7 @@ import type { DogReport } from '@/lib/types';
 const MAP_STYLES = [
   { name: 'Detailed', icon: '🏢', url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', attr: '&copy; OpenStreetMap', subdomains: 'abc' },
   { name: 'Voyager', icon: '🗺️', url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', attr: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd' },
-  { name: 'Satellite', icon: '🛰️', url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attr: '&copy; Esri', subdomains: '' },
+  { name: 'Satellite', icon: '🛰️', url: 'https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', attr: '&copy; Google', subdomains: '0123' },
   { name: 'Dark', icon: '🌙', url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', attr: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd' },
 ];
 
