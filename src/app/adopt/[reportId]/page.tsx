@@ -187,6 +187,31 @@ export default function AdoptPage() {
           </div>
         )}
 
+        {/* Instructions banner */}
+        <div className="bg-green-50 border border-green-200 rounded-2xl p-4 space-y-2">
+          <p className="text-sm font-semibold text-green-800">
+            {lang === 'th' ? '📋 ขั้นตอนหลังกรอกฟอร์ม' : '📋 After submitting this form'}
+          </p>
+          <p className="text-sm text-green-700">
+            {lang === 'th'
+              ? 'กรุณาแอดไลน์ '
+              : 'Please add LINE '}
+            <span className="font-bold text-green-900">@ToniInfiniteGroup</span>
+            {lang === 'th'
+              ? ' และส่งรูปภาพหรือวิดีโอทัวร์บ้านของคุณให้เราด้วย เพื่อประกอบการพิจารณา'
+              : ' and send us a photo or video home tour for review.'}
+          </p>
+          <a
+            href="https://line.me/ti/g2/ToniInfiniteGroup"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 bg-green-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-green-600 transition-colors"
+          >
+            <span>💬</span>
+            <span>{lang === 'th' ? 'แอดไลน์ @ToniInfiniteGroup' : 'Add LINE @ToniInfiniteGroup'}</span>
+          </a>
+        </div>
+
         {/* Section: Personal Info */}
         <Section title={lang === 'th' ? 'ข้อมูลส่วนตัว' : 'Personal Information'}>
           <Field label={`${T.fullName[lang]} *`}>
