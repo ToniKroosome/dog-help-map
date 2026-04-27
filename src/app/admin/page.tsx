@@ -23,6 +23,7 @@ export default async function AdminPage() {
     viewsTodayRes,
     visitorsTodayRes,
     referrersRes,
+    applicationsRes,
   ] = await Promise.all([
     // All reports
     supabase.from('dog_reports').select('*').order('created_at', { ascending: false }),
@@ -48,9 +49,15 @@ export default async function AdminPage() {
     supabase.rpc('count_unique_visitors_since', { since_date: todayStart }),
     // Referrers for traffic sources
     supabase.from('page_views').select('referrer').not('referrer', 'is', null),
+    // Adoption applications with joined report
+    supabase
+      .from('adoption_applications')
+      .select('*, report:dog_reports(pet_type, status, description, latitude, longitude, photo_url)')
+      .order('created_at', { ascending: false }),
   ]);
 
   const reports = reportsRes.data || [];
+  const applications = (applicationsRes.data || []) as import('@/lib/types').AdoptionApplication[];
   const totalUsers = usersRes.count || 0;
   const totalUpdates = updatesRes.count || 0;
   const reportsToday = todayRes.count || 0;
@@ -121,6 +128,7 @@ export default async function AdminPage() {
   return (
     <AdminDashboard
       reports={reports}
+      applications={applications}
       totalUsers={totalUsers}
       totalUpdates={totalUpdates}
       reportsToday={reportsToday}

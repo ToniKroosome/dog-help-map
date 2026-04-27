@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import { T, DOG_STATUSES, ALL_STATUSES, type Lang, type DogStatus } from '@/lib/constants';
-import type { DogReport } from '@/lib/types';
+import type { DogReport, AdoptionApplication, AdoptionStatus } from '@/lib/types';
 import { createClient } from '@/lib/supabase/client';
 
 interface Props {
   reports: DogReport[];
+  applications: AdoptionApplication[];
   totalUsers: number;
   totalUpdates: number;
   reportsToday: number;
@@ -124,6 +125,7 @@ function timeAgo(dateStr: string, lang: Lang): string {
 /* ─── Main Dashboard ─── */
 export default function AdminDashboard({
   reports: initialReports,
+  applications: initialApplications,
   totalUsers,
   totalUpdates,
   reportsToday,
@@ -140,8 +142,12 @@ export default function AdminDashboard({
 }: Props) {
   const [lang, setLang] = useState<Lang>('th');
   const [reports, setReports] = useState(initialReports);
+  const [applications, setApplications] = useState(initialApplications);
   const [filterStatus, setFilterStatus] = useState<DogStatus | 'all'>('all');
+  const [appFilter, setAppFilter] = useState<AdoptionStatus | 'all'>('all');
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [updatingApp, setUpdatingApp] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'reports' | 'applications'>('reports');
 
   const filtered = filterStatus === 'all'
     ? reports
@@ -157,6 +163,25 @@ export default function AdminDashboard({
     }
     setDeleting(null);
   };
+
+  const handleUpdateApplication = async (id: string, status: AdoptionStatus, note?: string) => {
+    setUpdatingApp(id);
+    const supabase = createClient();
+    const { error } = await supabase
+      .from('adoption_applications')
+      .update({ status, admin_note: note ?? null })
+      .eq('id', id);
+    if (!error) {
+      setApplications((prev) =>
+        prev.map((a) => (a.id === id ? { ...a, status, admin_note: note ?? null } : a))
+      );
+    }
+    setUpdatingApp(null);
+  };
+
+  const filteredApps = appFilter === 'all'
+    ? applications
+    : applications.filter((a) => a.status === appFilter);
 
   return (
     <div className="fixed inset-0 overflow-y-auto bg-gradient-to-br from-gray-50 via-white to-blue-50/30">
@@ -313,7 +338,35 @@ export default function AdminDashboard({
           </section>
         )}
 
+        {/* Tab switcher */}
+        <section>
+          <div className="flex gap-2 mb-4">
+            <button
+              onClick={() => setActiveTab('reports')}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                activeTab === 'reports' ? 'bg-blue-500 text-white shadow-sm' : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50'
+              }`}
+            >
+              📊 {T.allReports[lang]} ({reports.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('applications')}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
+                activeTab === 'applications' ? 'bg-green-500 text-white shadow-sm' : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50'
+              }`}
+            >
+              🏠 {T.applications[lang]} ({applications.length})
+              {applications.filter((a) => a.status === 'pending').length > 0 && (
+                <span className="ml-1.5 bg-red-500 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5">
+                  {applications.filter((a) => a.status === 'pending').length}
+                </span>
+              )}
+            </button>
+          </div>
+        </section>
+
         {/* Reports Table */}
+        {activeTab === 'reports' && (
         <section>
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             {/* Table header */}
@@ -446,6 +499,60 @@ export default function AdminDashboard({
             )}
           </div>
         </section>
+        )}
+
+        {/* Applications Table */}
+        {activeTab === 'applications' && (
+        <section>
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <h3 className="text-base font-semibold text-gray-800">{T.applications[lang]}</h3>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {filteredApps.length} {lang === 'th' ? 'รายการ' : 'records'}
+                </p>
+              </div>
+              <div className="flex gap-1.5">
+                {(['all', 'pending', 'approved', 'rejected'] as const).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setAppFilter(s)}
+                    className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-all ${
+                      appFilter === s
+                        ? s === 'pending' ? 'bg-yellow-100 text-yellow-700 ring-1 ring-yellow-300'
+                          : s === 'approved' ? 'bg-green-100 text-green-700 ring-1 ring-green-300'
+                          : s === 'rejected' ? 'bg-red-100 text-red-700 ring-1 ring-red-300'
+                          : 'bg-gray-800 text-white'
+                        : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                    }`}
+                  >
+                    {s === 'all' ? T.all[lang] : T[s][lang]}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {filteredApps.length === 0 ? (
+              <div className="px-4 py-16 text-center">
+                <div className="text-4xl mb-3">🏠</div>
+                <p className="text-gray-400 text-sm">{T.noApplications[lang]}</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-50">
+                {filteredApps.map((app) => (
+                  <ApplicationRow
+                    key={app.id}
+                    app={app}
+                    lang={lang}
+                    updating={updatingApp === app.id}
+                    onUpdate={handleUpdateApplication}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+        )}
       </main>
 
       {/* Footer */}
@@ -456,6 +563,123 @@ export default function AdminDashboard({
           </p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function ApplicationRow({
+  app,
+  lang,
+  updating,
+  onUpdate,
+}: {
+  app: AdoptionApplication;
+  lang: Lang;
+  updating: boolean;
+  onUpdate: (id: string, status: AdoptionStatus, note?: string) => void;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const [note, setNote] = useState(app.admin_note ?? '');
+
+  const statusColors: Record<AdoptionStatus, string> = {
+    pending: 'bg-yellow-100 text-yellow-700',
+    approved: 'bg-green-100 text-green-700',
+    rejected: 'bg-red-100 text-red-700',
+  };
+
+  const petEmoji = app.report?.pet_type === 'cat' ? '🐱' : '🐕';
+
+  return (
+    <div className="px-5 py-4">
+      {/* Summary row */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start gap-3 flex-1 min-w-0">
+          <span className="text-xl shrink-0">{petEmoji}</span>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-gray-800">{app.full_name}</p>
+            <p className="text-xs text-gray-400">{app.phone}{app.line_id ? ` · LINE: ${app.line_id}` : ''}</p>
+            <p className="text-xs text-gray-400 truncate">{app.address}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusColors[app.status]}`}>
+            {T[app.status][lang]}
+          </span>
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="text-gray-400 hover:text-gray-600 text-xs px-2 py-1 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            {expanded ? '▲' : '▼'}
+          </button>
+        </div>
+      </div>
+
+      {/* Expanded details */}
+      {expanded && (
+        <div className="mt-4 space-y-3 border-t border-gray-50 pt-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+            <Detail label={lang === 'th' ? 'ที่พัก' : 'Housing'} value={`${app.housing_type} (${app.housing_ownership})`} />
+            <Detail label={lang === 'th' ? 'พื้นที่กลางแจ้ง' : 'Outdoor'} value={app.has_outdoor_space ? '✅' : '❌'} />
+            <Detail label={lang === 'th' ? 'ผู้ใหญ่/เด็ก' : 'Adults/Kids'} value={`${app.num_adults} / ${app.num_children}`} />
+            <Detail label={lang === 'th' ? 'แพ้สัตว์' : 'Allergies'} value={app.has_allergies ? '⚠️ Yes' : 'No'} />
+            {app.current_pets && <Detail label={lang === 'th' ? 'สัตว์ปัจจุบัน' : 'Current Pets'} value={app.current_pets} />}
+          </div>
+          {app.past_experience && (
+            <div>
+              <p className="text-xs font-medium text-gray-500 mb-1">{T.pastExperience[lang]}</p>
+              <p className="text-xs text-gray-600 bg-gray-50 rounded-lg p-2">{app.past_experience}</p>
+            </div>
+          )}
+          <div>
+            <p className="text-xs font-medium text-gray-500 mb-1">{T.reason[lang]}</p>
+            <p className="text-xs text-gray-700 bg-gray-50 rounded-lg p-2">{app.reason}</p>
+          </div>
+
+          {/* Admin note + actions */}
+          <div className="flex flex-col gap-2">
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder={T.adminNote[lang]}
+              className="w-full text-xs rounded-lg border border-gray-200 px-3 py-2 resize-none h-16 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={() => onUpdate(app.id, 'approved', note)}
+                disabled={updating || app.status === 'approved'}
+                className="flex-1 py-2 rounded-xl bg-green-500 text-white text-xs font-semibold hover:bg-green-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                {updating ? '...' : `✅ ${T.approve[lang]}`}
+              </button>
+              <button
+                onClick={() => onUpdate(app.id, 'rejected', note)}
+                disabled={updating || app.status === 'rejected'}
+                className="flex-1 py-2 rounded-xl bg-red-500 text-white text-xs font-semibold hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                {updating ? '...' : `❌ ${T.reject[lang]}`}
+              </button>
+              {app.status !== 'pending' && (
+                <button
+                  onClick={() => onUpdate(app.id, 'pending', note)}
+                  disabled={updating}
+                  className="flex-1 py-2 rounded-xl bg-yellow-400 text-white text-xs font-semibold hover:bg-yellow-500 disabled:opacity-40 transition-colors"
+                >
+                  {T.pending[lang]}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Detail({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">{label}</p>
+      <p className="text-xs text-gray-700 font-medium">{value}</p>
     </div>
   );
 }

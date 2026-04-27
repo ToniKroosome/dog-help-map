@@ -16,6 +16,7 @@ import { T, type Lang, type DogStatus } from '@/lib/constants';
 import type { DogReport } from '@/lib/types';
 import { BANGKOK_ZONES, distanceMeters, type Zone } from '@/lib/zones';
 import { usePageView } from '@/hooks/usePageView';
+import AdoptionSheet from '@/components/adopt/AdoptionSheet';
 
 const MapContainer = dynamic(() => import('@/components/map/MapContainer'), {
   ssr: false,
@@ -45,6 +46,7 @@ export default function Home() {
   const [flyTo, setFlyTo] = useState<{ lat: number; lng: number } | null>(null);
   const [movingReportId, setMovingReportId] = useState<string | null>(null);
   const [selectedZone, setSelectedZone] = useState<Zone | null>(null);
+  const [showAdoptionSheet, setShowAdoptionSheet] = useState(false);
 
   // Filter reports by zone
   const zoneFilteredReports = useMemo(() => {
@@ -170,15 +172,35 @@ export default function Home() {
         hideControls={!!selectedReport || showReportForm}
       />
 
-      {/* Report FAB button */}
-      {!reportMode && !showReportForm && !selectedReport && (
-        <button
-          onClick={handleStartReport}
-          className="fixed bottom-[72px] sm:bottom-24 left-1/2 -translate-x-1/2 z-[800] flex items-center gap-1.5 sm:gap-2 rounded-full bg-blue-500 px-4 py-2.5 sm:px-5 sm:py-3 text-white font-semibold shadow-xl hover:bg-blue-600 transition-all active:scale-95 text-sm sm:text-base"
-        >
-          <span className="text-base sm:text-lg">🐕</span>
-          <span>{T.reportDog[lang]}</span>
-        </button>
+      {/* FAB buttons */}
+      {!reportMode && !showReportForm && !selectedReport && !showAdoptionSheet && !movingReportId && (
+        <div className="fixed bottom-[72px] sm:bottom-24 left-1/2 -translate-x-1/2 z-[900] flex items-center gap-2">
+          <button
+            onClick={handleStartReport}
+            className="flex items-center gap-1.5 rounded-full bg-blue-500 px-3 py-2.5 sm:px-5 sm:py-3 text-white font-semibold shadow-xl hover:bg-blue-600 transition-all active:scale-95 text-sm sm:text-base whitespace-nowrap"
+          >
+            <span>🐾</span>
+            <span className="hidden sm:inline">{T.reportDogOrCat[lang]}</span>
+            <span className="sm:hidden">{lang === 'th' ? 'รายงาน' : 'Report'}</span>
+          </button>
+          <a
+            href="/adopt"
+            className="flex items-center gap-1.5 rounded-full bg-green-500 px-3 py-2.5 sm:px-5 sm:py-3 text-white font-semibold shadow-xl hover:bg-green-600 transition-all active:scale-95 text-sm sm:text-base whitespace-nowrap"
+          >
+            <span>🏠</span>
+            <span>{lang === 'th' ? 'รับเลี้ยง' : 'Adopt'}</span>
+          </a>
+          <button
+            onClick={() => {
+              if (!user) { alert(T.loginToReport[lang]); return; }
+              setShowAdoptionSheet(true);
+            }}
+            className="flex items-center gap-1.5 rounded-full bg-orange-400 px-3 py-2.5 sm:px-5 sm:py-3 text-white font-semibold shadow-xl hover:bg-orange-500 transition-all active:scale-95 text-sm sm:text-base whitespace-nowrap"
+          >
+            <span>📋</span>
+            <span>{lang === 'th' ? 'สมัคร' : 'Apply'}</span>
+          </button>
+        </div>
       )}
 
       {/* Report mode banner */}
@@ -240,6 +262,10 @@ export default function Home() {
           showHeatmap={showHeatmap}
           onToggleHeatmap={() => setShowHeatmap(!showHeatmap)}
         />
+      )}
+
+      {showAdoptionSheet && (
+        <AdoptionSheet lang={lang} onClose={() => setShowAdoptionSheet(false)} />
       )}
     </div>
   );

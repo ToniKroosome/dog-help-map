@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ALL_STATUSES, DOG_STATUSES, T, type DogStatus, type Lang } from '@/lib/constants';
 import { useReports } from '@/hooks/useReports';
 import { useGeolocation } from '@/hooks/useGeolocation';
+import type { PetType } from '@/lib/types';
 
 export default function ReportForm({
   lang,
@@ -19,6 +20,7 @@ export default function ReportForm({
   const { createReport, uploadPhoto } = useReports();
   const { position: gpsPosition, locate, loading: gpsLoading } = useGeolocation();
 
+  const [petType, setPetType] = useState<PetType>('dog');
   const [status, setStatus] = useState<DogStatus>('spotted');
   const [description, setDescription] = useState('');
   const [dogCount, setDogCount] = useState(1);
@@ -56,6 +58,7 @@ export default function ReportForm({
         latitude: position.lat,
         longitude: position.lng,
         status,
+        pet_type: petType,
         description: description || undefined,
         photo_url,
         dog_count: dogCount,
@@ -78,7 +81,7 @@ export default function ReportForm({
       <div className="relative w-full max-w-md max-h-[85vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl panel-bg bg-white shadow-2xl">
         <div className="sticky top-0 bg-white px-4 pt-4 pb-2 border-b border-gray-100 flex items-center justify-between rounded-t-2xl z-10">
           <h2 className="text-lg font-bold text-gray-800">
-            🐕 {T.reportDog[lang]}
+            {petType === 'dog' ? '🐕' : '🐱'} {T.reportDogOrCat[lang]}
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl p-1">
             ✕
@@ -86,6 +89,29 @@ export default function ReportForm({
         </div>
 
         <div className="p-4 space-y-4">
+          {/* Pet type toggle */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 mb-1.5 block">{T.petType[lang]}</label>
+            <div className="flex gap-2">
+              {(['dog', 'cat'] as PetType[]).map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setPetType(type)}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-medium border-2 transition-all ${
+                    petType === type
+                      ? type === 'dog'
+                        ? 'border-blue-500 bg-blue-50 text-blue-600'
+                        : 'border-purple-500 bg-purple-50 text-purple-600'
+                      : 'border-gray-200 text-gray-400 hover:border-gray-300'
+                  }`}
+                >
+                  <span className="text-lg">{type === 'dog' ? '🐕' : '🐱'}</span>
+                  <span>{T[type][lang]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Location */}
           <div>
             {position ? (
@@ -206,7 +232,7 @@ export default function ReportForm({
             disabled={submitting || !position}
             className="w-full py-3 rounded-xl bg-blue-500 text-white font-semibold hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {submitting ? T.submitting[lang] : `🐕 ${T.submit[lang]}`}
+            {submitting ? T.submitting[lang] : `${petType === 'dog' ? '🐕' : '🐱'} ${T.submit[lang]}`}
           </button>
         </div>
       </div>

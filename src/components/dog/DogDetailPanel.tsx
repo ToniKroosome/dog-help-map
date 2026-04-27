@@ -84,7 +84,7 @@ export default function DogDetailPanel({
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">{config?.icon}</span>
+            <span className="text-2xl">{report.pet_type === 'cat' ? '🐱' : config?.icon}</span>
             <StatusBadge status={report.status} lang={lang} size="md" />
             {report.dog_count > 1 && (
               <span className="text-sm text-gray-500">
@@ -142,6 +142,17 @@ export default function DogDetailPanel({
               {deleting ? '...' : `🗑️ ${T.deleteReport[lang]}`}
             </button>
           </div>
+        )}
+
+        {/* Adopt button */}
+        {user && (
+          <a
+            href={`/adopt/${report.id}`}
+            className="w-full py-2.5 rounded-xl bg-green-500 text-white text-sm font-medium hover:bg-green-600 transition-colors mb-2 flex items-center justify-center gap-1.5"
+          >
+            <span>🏠</span>
+            <span>{T.applyToAdopt[lang]}</span>
+          </a>
         )}
 
         {/* Update status button */}

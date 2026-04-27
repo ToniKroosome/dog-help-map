@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import type { DogReport, StatusUpdate } from '@/lib/types';
+import type { DogReport, StatusUpdate, PetType } from '@/lib/types';
 import type { DogStatus } from '@/lib/constants';
 
 export function useReports() {
@@ -50,6 +50,7 @@ export function useReports() {
       latitude: number;
       longitude: number;
       status: DogStatus;
+      pet_type?: PetType;
       description?: string;
       photo_url?: string;
       dog_count?: number;

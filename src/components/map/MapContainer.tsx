@@ -15,8 +15,10 @@ const MAP_STYLES = [
   { name: 'Dark', icon: '🌙', url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', attr: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd' },
 ];
 
-function createDogIcon(status: DogStatus): L.DivIcon {
+function createPetIcon(status: DogStatus, petType: 'dog' | 'cat' = 'dog'): L.DivIcon {
   const config = DOG_STATUSES[status];
+  const petEmoji = petType === 'cat' ? '🐱' : config.icon;
+  const borderColor = petType === 'cat' ? '#a855f7' : 'white';
   return L.divIcon({
     className: 'dog-marker',
     html: `
@@ -24,12 +26,12 @@ function createDogIcon(status: DogStatus): L.DivIcon {
         width: 36px; height: 36px;
         border-radius: 50%;
         background: ${config.color};
-        border: 3px solid white;
+        border: 3px solid ${borderColor};
         box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         display: flex; align-items: center; justify-content: center;
         font-size: 16px;
         cursor: pointer;
-      ">${config.icon}</div>
+      ">${petEmoji}</div>
     `,
     iconSize: [36, 36],
     iconAnchor: [18, 18],
@@ -205,6 +207,8 @@ export default function MapContainer({
 
     filteredReports.forEach((report) => {
       const isMoving = movingReportId === report.id;
+      const petType = report.pet_type ?? 'dog';
+      const petEmoji = petType === 'cat' ? '🐱' : DOG_STATUSES[report.status].icon;
       const icon = isMoving
         ? L.divIcon({
             className: 'dog-marker',
@@ -219,12 +223,12 @@ export default function MapContainer({
                 font-size: 20px;
                 cursor: grab;
                 animation: pulse 1.5s infinite;
-              ">${DOG_STATUSES[report.status].icon}</div>
+              ">${petEmoji}</div>
             `,
             iconSize: [44, 44],
             iconAnchor: [22, 22],
           })
-        : createDogIcon(report.status);
+        : createPetIcon(report.status, petType);
       const marker = L.marker([report.latitude, report.longitude], {
         icon,
         draggable: isMoving,
