@@ -212,6 +212,18 @@ export default function AdoptPage() {
           </a>
         </div>
 
+        {/* Warning banner */}
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-4 space-y-1">
+          <p className="text-sm font-semibold text-red-700">
+            ⚠️ {lang === 'th' ? 'คำเตือนสำคัญ' : 'Important Warning'}
+          </p>
+          <p className="text-sm text-red-600">
+            {lang === 'th'
+              ? 'หากพบว่าให้ข้อมูลเท็จ ทารุณกรรมสัตว์ หรือไม่สามารถดูแลสัตว์ได้อย่างเหมาะสม อาจมีการดำเนินคดีตามกฎหมายคุ้มครองสัตว์'
+              : 'If you are found to have provided false information, abused, or failed to properly care for the animal, you may be subject to legal action under animal protection laws.'}
+          </p>
+        </div>
+
         {/* Section: Personal Info */}
         <Section title={lang === 'th' ? 'ข้อมูลส่วนตัว' : 'Personal Information'}>
           <Field label={`${T.fullName[lang]} *`}>
