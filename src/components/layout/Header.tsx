@@ -26,7 +26,7 @@ export default function Header({
           <h1 className={`text-sm sm:text-base font-bold flex items-center gap-1 sm:gap-1.5 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
             <span>🐕</span>
             <span className="hidden sm:inline">{T.appName[lang]}</span>
-            <span className="sm:hidden">{lang === 'th' ? 'หมา' : 'Dog'}</span>
+            <span className="sm:hidden">{lang === 'th' ? 'หมา-แมว' : 'Dog & Cat'}</span>
           </h1>
         </div>
 

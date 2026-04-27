@@ -86,7 +86,7 @@ export const ALL_STATUSES = Object.keys(DOG_STATUSES) as DogStatus[];
 export type Lang = 'en' | 'th';
 
 export const T: Record<string, Record<Lang, string>> = {
-  appName: { en: 'Dog Help Map', th: 'แผนที่ช่วยหมา' },
+  appName: { en: 'Dog & Cat Help Map', th: 'แผนที่ช่วยหมา-แมว' },
   reportDog: { en: 'Report a Dog', th: 'รายงานสุนัข' },
   signIn: { en: 'Sign in with Google', th: 'เข้าสู่ระบบด้วย Google' },
   signOut: { en: 'Sign Out', th: 'ออกจากระบบ' },
