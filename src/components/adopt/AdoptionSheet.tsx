@@ -150,6 +150,23 @@ export default function AdoptionSheet({
             </a>
           </div>
 
+          {/* Follow-up requirement banner */}
+          <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 space-y-1.5">
+            <p className="text-sm font-semibold text-orange-800">
+              📸 {lang === 'th' ? 'เงื่อนไขการติดตามผล' : 'Follow-up Requirements'}
+            </p>
+            <p className="text-sm text-orange-700">
+              {lang === 'th'
+                ? 'ผู้รับเลี้ยงต้องส่งรูปภาพหรือวิดีโอของสัตว์ทุกวันเวลา 20:00 น. เป็นเวลา 3 เดือน เพื่อยืนยันว่าสัตว์ได้รับการดูแลอย่างดี'
+                : 'The adopter must send a photo or video of the pet every day at 20:00 for 3 months to confirm the pet is being well cared for.'}
+            </p>
+            <p className="text-sm font-medium text-orange-800">
+              {lang === 'th'
+                ? 'หากทารุณกรรม ละเลย หรือไม่สามารถดูแลสัตว์ได้ ต้องคืนสัตว์ทันที'
+                : 'If the pet is abused, neglected, or cannot be properly cared for, the pet must be returned immediately.'}
+            </p>
+          </div>
+
           {/* Warning banner */}
           <div className="bg-red-50 border border-red-200 rounded-2xl p-4 space-y-1">
             <p className="text-sm font-semibold text-red-700">
