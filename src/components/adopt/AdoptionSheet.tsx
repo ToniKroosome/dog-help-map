@@ -14,6 +14,7 @@ export default function AdoptionSheet({
   const [userId, setUserId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Form fields
@@ -91,6 +92,39 @@ export default function AdoptionSheet({
     setSubmitting(false);
   };
 
+  const buildLog = () => {
+    const housingMap = { house: lang === 'th' ? 'บ้าน' : 'House', condo: lang === 'th' ? 'คอนโด' : 'Condo', apartment: lang === 'th' ? 'อพาร์ตเมนต์' : 'Apartment' };
+    const lines = [
+      `🏠 ${lang === 'th' ? 'ใบสมัครรับเลี้ยงสัตว์' : 'Adoption Application'}`,
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `${lang === 'th' ? '🐾 สัตว์ที่ต้องการ' : '🐾 Pet'}: ${petType === 'dog' ? '🐕' : '🐱'} ${petName}`,
+      `${lang === 'th' ? '👤 ชื่อ' : '👤 Name'}: ${fullName}`,
+      `${lang === 'th' ? '📞 เบอร์โทร' : '📞 Phone'}: ${phone}`,
+      lineId ? `💬 LINE: ${lineId}` : '',
+      `${lang === 'th' ? '🏡 ที่อยู่' : '🏡 Address'}: ${address}`,
+      `${lang === 'th' ? '🏘️ ที่พัก' : '🏘️ Housing'}: ${housingMap[housingType]} (${housingOwnership === 'own' ? (lang === 'th' ? 'เจ้าของ' : 'Own') : (lang === 'th' ? 'เช่า' : 'Rent')})`,
+      `${lang === 'th' ? '🌿 พื้นที่กลางแจ้ง' : '🌿 Outdoor'}: ${hasOutdoorSpace ? (lang === 'th' ? 'มี' : 'Yes') : (lang === 'th' ? 'ไม่มี' : 'No')}`,
+      `${lang === 'th' ? '👨‍👩‍👧 ผู้ใหญ่/เด็ก' : '👨‍👩‍👧 Adults/Kids'}: ${numAdults} / ${numChildren}`,
+      `${lang === 'th' ? '🤧 แพ้สัตว์' : '🤧 Allergies'}: ${hasAllergies ? (lang === 'th' ? 'มี' : 'Yes') : (lang === 'th' ? 'ไม่มี' : 'No')}`,
+      currentPets ? `${lang === 'th' ? '🐶 สัตว์ปัจจุบัน' : '🐶 Current Pets'}: ${currentPets}` : '',
+      pastExperience ? `${lang === 'th' ? '📖 ประสบการณ์' : '📖 Experience'}: ${pastExperience}` : '',
+      `━━━━━━━━━━━━━━━━━━━━`,
+      `${lang === 'th' ? '💬 เหตุผล' : '💬 Reason'}:`,
+      reason,
+      `━━━━━━━━━━━━━━━━━━━━`,
+      lang === 'th'
+        ? '✅ ข้าพเจ้ารับทราบและยอมรับเงื่อนไขการรับเลี้ยงสัตว์ทุกข้อ'
+        : '✅ I acknowledge and accept all adoption terms and conditions.',
+    ].filter(Boolean).join('\n');
+    return lines;
+  };
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(buildLog());
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
   return (
     <div
       className="fixed inset-x-0 bottom-0 z-[1000] max-h-[85vh] overflow-y-auto rounded-t-2xl bg-white shadow-2xl border-t border-gray-200 animate-slide-up"
@@ -104,15 +138,55 @@ export default function AdoptionSheet({
       </div>
 
       {submitted ? (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-          <div className="text-5xl mb-4">🎉</div>
-          <h2 className="text-lg font-bold text-gray-800 mb-2">{T.adoptionSubmitted[lang]}</h2>
-          <p className="text-gray-500 text-sm mb-6">
-            {lang === 'th' ? 'เราจะติดต่อกลับหาคุณเร็วๆ นี้' : "We'll get back to you soon."}
-          </p>
+        <div className="flex flex-col px-4 pb-8 pt-2 space-y-4">
+          <div className="text-center pt-6">
+            <div className="text-5xl mb-3">🎉</div>
+            <h2 className="text-lg font-bold text-gray-800 mb-1">{T.adoptionSubmitted[lang]}</h2>
+            <p className="text-gray-500 text-sm">
+              {lang === 'th' ? 'ส่งใบสมัครเรียบร้อยแล้ว' : 'Your application has been submitted.'}
+            </p>
+          </div>
+
+          {/* Copy instruction */}
+          <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 space-y-3">
+            <p className="text-sm font-semibold text-blue-800">
+              💬 {lang === 'th' ? 'ขั้นตอนถัดไป' : 'Next Step'}
+            </p>
+            <p className="text-sm text-blue-700">
+              {lang === 'th'
+                ? 'กดปุ่มด้านล่างเพื่อคัดลอกข้อมูลของคุณ แล้วนำไปวางในข้อความ LINE'
+                : 'Tap the button below to copy your application log, then paste it in your LINE message to us.'}
+              {' '}<span className="font-bold">@ToniInfiniteGroup</span>
+            </p>
+            {/* Log preview */}
+            <pre className="bg-white rounded-xl border border-blue-100 p-3 text-xs text-gray-600 whitespace-pre-wrap font-sans max-h-40 overflow-y-auto">
+              {buildLog()}
+            </pre>
+            <button
+              onClick={handleCopy}
+              className={`w-full py-3 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 ${
+                copied
+                  ? 'bg-green-500 text-white'
+                  : 'bg-blue-500 text-white hover:bg-blue-600'
+              }`}
+            >
+              {copied ? (lang === 'th' ? '✅ คัดลอกแล้ว!' : '✅ Copied!') : (lang === 'th' ? '📋 คัดลอกข้อมูล' : '📋 Copy Application Log')}
+            </button>
+          </div>
+
+          <a
+            href="https://line.me/ti/g2/ToniInfiniteGroup"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-3 rounded-xl bg-green-500 text-white font-semibold text-sm flex items-center justify-center gap-2 hover:bg-green-600 transition-colors"
+          >
+            <span>💬</span>
+            <span>{lang === 'th' ? 'เปิด LINE @ToniInfiniteGroup' : 'Open LINE @ToniInfiniteGroup'}</span>
+          </a>
+
           <button
             onClick={onClose}
-            className="px-6 py-2.5 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors"
+            className="w-full py-2.5 rounded-xl border border-gray-200 text-gray-500 text-sm font-medium hover:bg-gray-50 transition-colors"
           >
             {T.close[lang]}
           </button>
