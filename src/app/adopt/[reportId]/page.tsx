@@ -364,11 +364,12 @@ export default function AdoptPage() {
               ))}
             </div>
           </Field>
-          <Toggle
-            label={T.hasOutdoorSpace[lang]}
-            value={hasOutdoorSpace}
-            onChange={setHasOutdoorSpace}
-          />
+          <Field label={T.hasOutdoorSpace[lang]}>
+            <div className="flex gap-2">
+              <button onClick={() => setHasOutdoorSpace(true)} className={`flex-1 py-2 rounded-xl text-xs font-medium border-2 transition-all ${hasOutdoorSpace ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}>✅ {lang === 'th' ? 'มี' : 'Yes'}</button>
+              <button onClick={() => setHasOutdoorSpace(false)} className={`flex-1 py-2 rounded-xl text-xs font-medium border-2 transition-all ${!hasOutdoorSpace ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}>❌ {lang === 'th' ? 'ไม่มี' : 'No'}</button>
+            </div>
+          </Field>
         </Section>
 
         {/* Section: Household */}
@@ -379,11 +380,12 @@ export default function AdoptPage() {
           <Field label={T.numChildren[lang]}>
             <Counter value={numChildren} min={0} onChange={setNumChildren} />
           </Field>
-          <Toggle
-            label={T.hasAllergies[lang]}
-            value={hasAllergies}
-            onChange={setHasAllergies}
-          />
+          <Field label={T.hasAllergies[lang]}>
+            <div className="flex gap-2">
+              <button onClick={() => setHasAllergies(true)} className={`flex-1 py-2 rounded-xl text-xs font-medium border-2 transition-all ${hasAllergies ? 'border-red-400 bg-red-50 text-red-500' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}>⚠️ {lang === 'th' ? 'มี' : 'Yes'}</button>
+              <button onClick={() => setHasAllergies(false)} className={`flex-1 py-2 rounded-xl text-xs font-medium border-2 transition-all ${!hasAllergies ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}>✅ {lang === 'th' ? 'ไม่มี' : 'No'}</button>
+            </div>
+          </Field>
         </Section>
 
         {/* Section: Experience */}

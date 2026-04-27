@@ -339,7 +339,13 @@ export default function AdoptionSheet({
                 ))}
               </div>
             </div>
-            <Toggle label={T.hasOutdoorSpace[lang]} value={hasOutdoorSpace} onChange={setHasOutdoorSpace} />
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-1.5 block">{T.hasOutdoorSpace[lang]}</label>
+              <div className="flex gap-2">
+                <button onClick={() => setHasOutdoorSpace(true)} className={`flex-1 py-2 rounded-xl text-xs font-medium border-2 transition-all ${hasOutdoorSpace ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}>✅ {lang === 'th' ? 'มี' : 'Yes'}</button>
+                <button onClick={() => setHasOutdoorSpace(false)} className={`flex-1 py-2 rounded-xl text-xs font-medium border-2 transition-all ${!hasOutdoorSpace ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}>❌ {lang === 'th' ? 'ไม่มี' : 'No'}</button>
+              </div>
+            </div>
           </div>
 
           {/* Household */}
@@ -355,7 +361,13 @@ export default function AdoptionSheet({
               <label className="text-sm font-medium text-gray-700 mb-1.5 block">{T.numChildren[lang]}</label>
               <Counter value={numChildren} min={0} onChange={setNumChildren} />
             </div>
-            <Toggle label={T.hasAllergies[lang]} value={hasAllergies} onChange={setHasAllergies} />
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-1.5 block">{T.hasAllergies[lang]}</label>
+              <div className="flex gap-2">
+                <button onClick={() => setHasAllergies(true)} className={`flex-1 py-2 rounded-xl text-xs font-medium border-2 transition-all ${hasAllergies ? 'border-red-400 bg-red-50 text-red-500' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}>⚠️ {lang === 'th' ? 'มี' : 'Yes'}</button>
+                <button onClick={() => setHasAllergies(false)} className={`flex-1 py-2 rounded-xl text-xs font-medium border-2 transition-all ${!hasAllergies ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}>✅ {lang === 'th' ? 'ไม่มี' : 'No'}</button>
+              </div>
+            </div>
           </div>
 
           {/* Experience */}
